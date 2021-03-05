@@ -1,4 +1,7 @@
 from game import *
 import sys
 
-title()
+
+if title() == True:
+    os.system('clear')
+    race_choice()

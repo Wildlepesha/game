@@ -12,13 +12,21 @@ class player():
 	crit = 5
 	crit_mp = 1.5
 	base_atk_min = 10
-	base_atk_max = 15  
+	base_atk_max = 15
+	skill = 3
 	
 	
 def title():
-	print("#"*50)
-	print("#                      play                      #")
-	print("#"*50)
+	print("#" * 50)
+	print("#                      play?                     #")
+	print("#" * 50)
+	print('Type y - for start, n - for exit')
+	print('#' * 50)
+	p = input('> ').lower()
+	if p == 'y':
+		return True
+	else:
+		return False
 
 def crit_deal():
 	r = random.randint(0,100)
@@ -36,7 +44,6 @@ def body_part():
 		part = 'body'
 	elif bp == 2:
 		part = 'legs'
-	print(part)
 	
 	if part == 'head':
 		h = random.randint(int(player.base_atk_min * 1.5), int(player.base_atk_max * 1.5))
@@ -52,10 +59,10 @@ def body_part():
 		
 def crit_dmg():
 	if crit_deal() == True:
-		dealt = int(body_part() * 1.5)
-		print('Crit!',dealt)
+		dealt = int(body_part() * player.crit_mp)
+		return 'Crit!', dealt
 	else:
-		print('No crit (', body_part())
+		return 'No crit', body_part()
 
 def item_drop():
 	index = random.randint(0, 2)
@@ -77,8 +84,48 @@ def item_drop():
 		print(player.life)
 		
 def race_choice():
-		print('Выберите рассу: ')
-		count = 0
-		for i in race_list:
-			print(count, i)
-			count += 1
+	print('Выберите рассу: ')
+	count = 0
+	for i in race_list:
+		print(count, i)
+		count += 1
+	r = int(input('> '))
+	if r in [0, 1, 2, 3]:
+		player.race = race_list[r]
+		if r == 1:
+			player.crit += 10
+		print('Поздравляю! Вы -', player.race)
+		stats()
+	else:
+		race_choice()
+
+def stats():
+	print('Ваши статистики: ')
+	print('Здоровье:', player.life)
+	print('Шанс крита:', player.crit, '%')
+	print('Крит мультипликатор:', player.crit_mp)
+	print('Урон атаки:', player.base_atk_min, '-', player.base_atk_max)
+
+def skill_choice():
+	while player.skill != 0:
+		print(f'\nУ вас есть свободные очки навыкв({player.skill}), куда их распределить? \n')
+		for char in range(3):
+			if char == 0:
+				print(char, 'Здоровье')
+			elif char == 1:
+				print(char, 'Шанс крита')
+			elif char == 2:
+				print(char, 'Атака \n')
+		sk = int(input('> '))
+		if sk == 0:
+			print('Здоровье увеличено на 5! \n')
+			player.life += 5
+		elif sk == 1:
+			print('Шанс крита увеличен на 2! \n')
+			player.crit += 2
+		elif sk == 2:
+			print('Базовая атака увеличена на 2! \n')
+			player.base_atk_min += 2
+			player.base_atk_max += 2
+		player.skill -= 1
+	stats()
