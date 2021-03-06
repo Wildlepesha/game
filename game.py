@@ -14,7 +14,10 @@ class player():
 	base_atk_min = 10
 	base_atk_max = 15
 	skill = 3
-	
+	dmg_mid = (base_atk_min + base_atk_max)//2
+
+class dummie():
+	life = 150
 	
 def title():
 	print("#" * 50)
@@ -46,42 +49,56 @@ def body_part():
 		part = 'legs'
 	
 	if part == 'head':
-		h = random.randint(int(player.base_atk_min * 1.5), int(player.base_atk_max * 1.5))
-		return h
+		dmg = random.randint(int(player.base_atk_min * 1.5), int(player.base_atk_max * 1.5))
+		if crit_deal() == True:
+			dmg = dmg * player.crit_mp
+			return dmg, 'Крит! Голова'
+		else:
+			return dmg, 'Голова'
 	
 	elif part == 'body':
-		b = random.randint(int(player.base_atk_min), int(player.base_atk_max))
-		return b
+		dmg = random.randint(int(player.base_atk_min), int(player.base_atk_max))
+		if crit_deal() == True:
+			dmg = dmg * player.crit_mp
+			return dmg, 'Крит! Тело'
+		else:
+			return dmg, 'Тело'
 
 	elif part == 'legs':
-		l = random.randint(int(player.base_atk_min * 0.8), int(player.base_atk_max * 0.8))
-		return l
+		dmg = random.randint(int(player.base_atk_min * 0.8), int(player.base_atk_max * 0.8))
+		if crit_deal() == True:
+			dmg = dmg * player.crit_mp
+			return dmg, 'Крит! Ноги'
+		else:
+			return dmg, 'Ноги'
 		
-def crit_dmg():
-	if crit_deal() == True:
-		dealt = int(body_part() * player.crit_mp)
-		return 'Crit!', dealt
-	else:
-		return 'No crit', body_part()
+# def damage():
+# 	if crit_deal() == True:
+# 		dealt = int(body_part() * player.crit_mp)
+# 		return dealt
+# 	else:
+# 		return body_part()
 
 def item_drop():
 	index = random.randint(0, 2)
 	item = items[index]
-	print('Вам выпал', item)
+	print('Вам выпал предмет - ', item)
 	if index == 0:
-		mn = int(player.base_atk_min + 3)
-		mx = int(player.base_atk_max + 3)
-		dmg_mid = (mn + mx)//2
-		print(dmg_mid)
+		sword = random.randint(1, 3)
+		player.base_atk_min += sword
+		player.base_atk_max += sword
+		print(f'Он дает: {sword} атаки!')
 	elif index == 1:
 		if player.crit >= 100:
 			player.crit_mp += 0.1
 		else:
-			player.crit += 6
-		print(player.crit)
+			glove = random.randint(1, 6)
+			player.crit += glove
+			print(f'Он дает: {glove} % шанса крита, но если у вас больше 100% он дает 0.1 мультипликатора урона!')
 	elif index == 2:
-		player.life += 6
-		print(player.life)
+		ring = random.randint(1, 6)
+		player.life += ring
+		print(f'Он дает {ring} здоровья!')
 		
 def race_choice():
 	print('Выберите рассу: ')
@@ -128,4 +145,17 @@ def skill_choice():
 			player.base_atk_min += 2
 			player.base_atk_max += 2
 		player.skill -= 1
-	stats()
+		stats()
+def chest():
+	for i in range(random.randint(0, 4)):
+		item_drop()
+
+def beat():
+	# print(body_part())
+	# print(dummie.life - round(body_part()))
+	while dummie.life > 0:
+		dummie.life -= round(body_part()[0])
+		if dummie.life < 0:
+			print('Oh no(')
+		else:
+			print(dummie.life, body_part()[1])
